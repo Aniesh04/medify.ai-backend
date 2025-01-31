@@ -47,8 +47,11 @@ def get_suggest(user_prompt: str) -> str:
 
     Based on the above instructions, give medical advice to the following patient query:
     {user_prompt}
+
+    If the patient query is not related to any medical query or medical topic reply:
+    "I am a medical chatbot"
     """
-    
+
     response = model.generate_content(input)
 
     return str(response.text)
