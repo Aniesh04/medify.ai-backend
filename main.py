@@ -3,8 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from os import environ as env 
 import tempfile
 
-
-from utils import get_transcriptions
+from utils import get_transcriptions, get_suggest
 
 app = FastAPI()
 
@@ -38,3 +37,12 @@ async def single_speaker_transcribe(file: UploadFile):
     text_output = get_transcriptions(temp_file_path)
 
     return { "file_name": file.filename, "text": text_output}
+
+
+# Med Suggestion Route
+@app.post("/med-suggest")
+async def med_suggest(prompt: str):
+
+    text = get_suggest(prompt)
+
+    return {"prompt": prompt, "message": text}
