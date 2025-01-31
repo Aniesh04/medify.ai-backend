@@ -1,6 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from os import environ as env 
+import tempfile
+
+
+from utils import get_transcriptions
 
 app = FastAPI()
 
@@ -19,3 +23,18 @@ async def root():
     except:
         pass
     return {"message": "Medify.ai 🎉", "ENV_ACCESS": env_var}
+
+
+# Single speaker route
+@app.post("/single-speaker-transcribe")
+async def single_speaker_transcribe(file: UploadFile):
+
+    with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+
+        file_data = await file.read()
+        temp_file.write(file_data)
+        temp_file_path = temp_file.name
+
+    text_output = get_transcriptions(temp_file_path)
+
+    return { "file_name": file.filename, "text": text_output}
