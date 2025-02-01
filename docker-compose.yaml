@@ -3,7 +3,7 @@ version: '3'
 services:
   web:
     build: .
-    command: sh -c "uvicorn main:app --reload --port=8000 --host=0.0.0.0"
+    command: sh -c "uvicorn main:app --reload --port=10000 --host=0.0.0.0"
     env_file:
       - .env
     ports:
