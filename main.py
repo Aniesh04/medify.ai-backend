@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from os import environ as env 
 import tempfile
 
-from utils import get_transcriptions, get_suggest
+from utils import get_transcriptions, get_suggest, get_multi_speaker_transcriptions
 
 app = FastAPI()
 
@@ -46,3 +46,17 @@ async def med_suggest(prompt: str):
     text = get_suggest(prompt)
 
     return {"prompt": prompt, "message": text}
+
+
+@app.post("/doc-pat-transcribe")
+async def doc_pat_transcribe(file: UploadFile):
+
+    with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+
+        file_data = await file.read()
+        temp_file.write(file_data)
+        temp_file_path = temp_file.name
+
+    text_output = get_multi_speaker_transcriptions(temp_file_path)
+
+    return { "file_name": file.filename, "text": text_output}
